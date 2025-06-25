@@ -1,27 +1,28 @@
 package org.example;
 
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
         Connection myConn = null;
-        Statement myStamt = null;
-        ResultSet myRes = null;
+        PreparedStatement myStamt = null;
+
 
         try{
             myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","Misael_12");
             System.out.println("Conexión exitosa");
 
-            myStamt = myConn.createStatement();
-            myRes = myStamt.executeQuery("select * from employees");
+            String sql = ("INSERT INTO employees (first_name, pa_surname) VALUES (?, ?)");
+            myStamt = myConn.prepareStatement(sql);
+            myStamt.setString(1, "Johana");
+            myStamt.setString(2, "Dorantes");
 
-            while (myRes.next()){
-                System.out.println(myRes.getString("first_name"));
+            int rowsAffected = myStamt.executeUpdate();
+
+            if (rowsAffected>0){
+                System.out.println("Se ha creado un nuevo registro");
             }
         }catch (Exception e){
             e.printStackTrace();
