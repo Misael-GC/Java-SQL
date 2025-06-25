@@ -7,22 +7,21 @@ import java.sql.*;
 public class Main {
     public static void main(String[] args) {
         Connection myConn = null;
-        PreparedStatement myStamt = null;
+        Statement myStamt = null;
+        ResultSet myRes = null;
 
 
         try{
             myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/project","root","Misael_12");
             System.out.println("Conexión exitosa");
 
-            String sql = ("INSERT INTO employees (first_name, pa_surname) VALUES (?, ?)");
-            myStamt = myConn.prepareStatement(sql);
-            myStamt.setString(1, "Johana");
-            myStamt.setString(2, "Dorantes");
+            myStamt = myConn.createStatement();
 
-            int rowsAffected = myStamt.executeUpdate();
+            int rowsAffected = myStamt.executeUpdate("UPDATE employees " + "set email='j.nador23@email.com' " + " WHERE first_name='Johana'");
 
-            if (rowsAffected>0){
-                System.out.println("Se ha creado un nuevo registro");
+            myRes = myStamt.executeQuery("SELECT *FROM employees order by pa_surname");
+            while (myRes.next()){
+                System.out.println(myRes.getString("first_name") + "," + myRes.getString("email"));
             }
         }catch (Exception e){
             e.printStackTrace();
